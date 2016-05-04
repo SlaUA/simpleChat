@@ -7,11 +7,11 @@
 
         serverActionsMap: {
             CLIENT_CONNECTED: 'onInit',
-            MESSAGE_ARRIVED : 'onMessageArrive'
+            MESSAGE_ARRIVED : 'onChatMessageArrive'
         },
 
         clientActionsMap: {
-            SEND_MESSAGE: 'sendMessage'
+            SEND_MESSAGE: 'sendMessageToChat'
         },
 
         cachedElements: {
@@ -27,13 +27,15 @@
             this.cachedElements.$chatMessage = this.cachedElements.$body.find('#chatMessage');
 
             this.server = window.io(this.address);
-            this.server.on('message', this.onMessage);
+            this.server.on('message', this.onMessage.bind(this));
         },
 
         onMessage: function (data) {
 
+            var message;
+
             try {
-                var message = JSON.parse(data);
+                message = JSON.parse(data);
             } catch (e) {
                 return;
             }
@@ -42,19 +44,20 @@
                 return;
             }
 
-            this[message.action].call(this, message);
+            this[this.serverActionsMap[message.action]].call(this, message);
         },
 
         onInit: function (message) {
 
-
+            debugger;
         },
 
-        onMessageArrive: function (message) {
+        onChatMessageArrive: function (message) {
 
+            debugger;
         },
 
-        sendMessage: function () {
+        sendMessageToChat: function () {
 
         },
 
@@ -72,5 +75,5 @@
         }
     };
 
-    jQuery(chatManager.init);
+    jQuery(chatManager.init.bind(chatManager));
 })();
