@@ -65,8 +65,6 @@ function Chat(server) {
             from  : message && message.from
         };
 
-        console.log(infoToSend);
-
         if (socket) {
             socket.emit('message', JSON.stringify(infoToSend));
             return;

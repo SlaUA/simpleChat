@@ -126,7 +126,6 @@
          */
         onChatMessageSent: function (message) {
 
-            debugger;
             this.cachedElements.$chatList.append('<li class="message">' + message.data + '</li>');
             this.playSound(this.soundsHash.MESSAGE_ARRIVED);
         },
