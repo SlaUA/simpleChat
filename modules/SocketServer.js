@@ -6,6 +6,7 @@ function SocketServer() {
     var _this  = null;
     /**
      * @type {null|Chat}
+     * single chat instance
      */
     this.chat = null;
 

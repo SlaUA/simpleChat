@@ -2,4 +2,12 @@ doctype html
 html
     head
         script(src='main.js')
+        meta(name="viewport",content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", type="text/css", href="vendor.css")
+        link(rel="stylesheet", type="text/css", href="main.css")
     body
+        div.chatWrapper
+            ul.chat
+            input(type="text").messageText
+            div.sendMessage
+                |Отправить сообщение
