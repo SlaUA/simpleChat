@@ -89,7 +89,7 @@ function Chat(server) {
             return;
         }
         this.publishAction(this.serverCommandsMap.CHAT_MESSAGE_SENT, message);
-    }
+    };
 }
 
 Chat.prototype.actionsFromClientMap = {
@@ -101,4 +101,6 @@ Chat.prototype.serverCommandsMap = {
     CHAT_MESSAGE_SENT: 'CHAT_MESSAGE_SENT'
 };
 
-module.exports = Chat;
+module.exports = function (server) {
+    return new Chat(server);
+};

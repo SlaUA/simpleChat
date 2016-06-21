@@ -21,11 +21,9 @@ gulp.task('style:vendor', function () {
 
 gulp.task('style:custom', function () {
     return gulp.src(['client/development/css/custom/*.styl'])
-               .pipe(sourcemaps.init())
                .pipe(stylus())
                .pipe(autoprefixer())
                .pipe(concat('main.css'))
-               .pipe(sourcemaps.write('.'))
                .pipe(gulp.dest('client/public'));
 });
 

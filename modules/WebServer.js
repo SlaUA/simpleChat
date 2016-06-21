@@ -18,7 +18,8 @@ function WebServer() {
             console.log('WebServer is listening on port ' + port + '!');
         });
 
-        _this.set('view engine', 'pug');
+        _this.set('views', (process.cwd() + '/views'));
+        _this.set('view engine', 'ejs');
     };
 
     return this;

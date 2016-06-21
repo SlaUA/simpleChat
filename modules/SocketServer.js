@@ -13,7 +13,7 @@ function SocketServer() {
     this.init = function (port) {
 
         _this = io(server);
-        _this.chat = new Chat(_this);
+        _this.chat = Chat(_this);
         _this.chat.init();
 
         server.listen(port, function () {

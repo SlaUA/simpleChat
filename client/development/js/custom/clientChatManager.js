@@ -3,8 +3,7 @@
     var clientChatManager = {
 
         connection: null,
-        address   : 'ws://192.168.0.105:3000',
-        id        : null,
+        address   : 'ws://localhost:3000',
 
         actionsFromServerMap: {
             CLIENT_CONNECTED : 'onClientConnect',
@@ -15,14 +14,14 @@
             SEND_MESSAGE: 'SEND_MESSAGE'
         },
 
-        soundsHash: {
+        soundsMap: {
             MESSAGE_ARRIVED: {
                 id    : 'MESSAGE_ARRIVED',
                 source: '/sounds/notify.mp3'
             }
         },
 
-        eventsMap: {
+        keysMap: {
             ENTER_KEY: 13
         },
 
@@ -51,13 +50,13 @@
         cacheSounds: function () {
 
             var audio;
-            for (var soundEvent in this.soundsHash) {
-                if (!this.soundsHash.hasOwnProperty(soundEvent)) {
+            for (var soundEvent in this.soundsMap) {
+                if (!this.soundsMap.hasOwnProperty(soundEvent)) {
                     continue;
                 }
-                audio                                                      = new Audio();
-                audio.src                                                  = this.soundsHash[soundEvent].source;
-                this.cachedElements.sounds[this.soundsHash[soundEvent].id] = audio;
+                audio                                                     = new Audio();
+                audio.src                                                 = this.soundsMap[soundEvent].source;
+                this.cachedElements.sounds[this.soundsMap[soundEvent].id] = audio;
             }
         },
 
@@ -76,7 +75,7 @@
             var chatMessage;
 
             if (!(event.type === 'keypress' &&
-                event.which === this.eventsMap.ENTER_KEY ||
+                event.which === this.keysMap.ENTER_KEY ||
                 event.type === 'click')) {
                 return;
             }
@@ -121,13 +120,16 @@
         },
 
         /**
-         * Triggers when message arrives from server(another user)
+         * Triggers when message arrives from server
          * @param {object} message - object with data and action to run
          */
         onChatMessageSent: function (message) {
 
             this.cachedElements.$chatList.append('<li class="message">' + message.data + '</li>');
-            this.playSound(this.soundsHash.MESSAGE_ARRIVED);
+            if (this.connection.id === message.from) {
+                return;
+            }
+            this.playSound(this.soundsMap.MESSAGE_ARRIVED);
         },
 
         /**
@@ -150,5 +152,5 @@
         }
     };
 
-    jQuery(clientChatManager.init.bind(clientChatManager));
+    //jQuery(clientChatManager.init.bind(clientChatManager));
 })();
