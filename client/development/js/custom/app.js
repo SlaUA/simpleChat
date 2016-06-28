@@ -1,4 +1,4 @@
-angular.module('chatApp', ['ngRoute', 'controllers'])
+angular.module('chatApp', ['ngRoute', 'controllers', 'services'])
 
        .config(function ($routeProvider, $locationProvider) {
 
@@ -11,7 +11,15 @@ angular.module('chatApp', ['ngRoute', 'controllers'])
 
                .when('/chat', {
                    templateUrl: '/templates/chat.html',
-                   controller : 'chatController'
+                   controller : 'chatController',
+                   resolve    : {
+                       check: function ($location, UserModule) {
+
+                           if (!UserModule.isLoggedIn) {
+                               return $location.path('/');
+                           }
+                       }
+                   }
                })
 
                .when('/about', {
@@ -19,7 +27,9 @@ angular.module('chatApp', ['ngRoute', 'controllers'])
                    controller : 'aboutController'
                })
 
-               .otherwise({redirectTo: '/'});
+               .otherwise({
+                   redirectTo: '/'
+               });
 
            $locationProvider.html5Mode(true);
        });

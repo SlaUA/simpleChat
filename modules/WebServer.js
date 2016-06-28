@@ -10,7 +10,7 @@ function WebServer() {
 
         _this.use(express.static('./client/public'));
 
-        _this.get('/', function (req, res) {
+        _this.get('*', function (req, res) {
             res.render('index');
         });
 

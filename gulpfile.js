@@ -41,5 +41,5 @@ gulp.task('templates', function () {
 
 gulp.task('default', function () {
 
-    gulp.watch('client/development/**', ['javascript', 'style:vendor', 'style:custom', 'templates']);
+    gulp.watch('client/development/**', gulp.parallel(['javascript', 'style:vendor', 'style:custom', 'templates']));
 });

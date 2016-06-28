@@ -1,9 +1,9 @@
 angular.module('controllers', ['services'])
 
        .controller('helloController', [
-           '$scope', 'AuthModule', function ($scope, AuthModule) {
+           '$scope', 'UserModule', function ($scope, UserModule) {
 
-               $scope.username = AuthModule.currentUser ? AuthModule.currentUser : 'guest';
+               $scope.username = UserModule.username ? UserModule.username : 'guest';
            }
        ])
 

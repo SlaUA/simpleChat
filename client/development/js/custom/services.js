@@ -1,13 +1,27 @@
 angular.module('services', [])
 
-       .factory('AuthModule', function () {
+       .factory('UserModule', function () {
 
-           var currentUser = null;
+           var username = null;
 
            return {
-               isLoggedIn : function () {
-                   return Boolean(currentUser);
+               get isLoggedIn() {
+                   return Boolean(username);
                },
-               currentUser: currentUser
-           };
+
+               get username() {
+                   return username;
+               },
+
+               set username(usernameToSet) {
+
+                   if (!(usernameToSet &&
+                         typeof usernameToSet === 'string' &&
+                         usernameToSet.length > 1 &&
+                         usernameToSet !== 'guest')) {
+                       return;
+                   }
+                   username = usernameToSet;
+               }
+           }
        });
