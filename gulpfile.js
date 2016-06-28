@@ -5,7 +5,14 @@ var stylus       = require('gulp-stylus');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('javascript', function () {
-    return gulp.src(['client/development/js/vendor/*.js', 'client/development/js/custom/*.js'])
+    return gulp.src([
+                   'client/development/js/vendor/angular.js',
+                   'client/development/js/vendor/angular-route.js',
+                   'client/development/js/custom/controllers.js',
+                   'client/development/js/custom/services.js',
+                   'client/development/js/custom/app.js',
+                   'client/development/js/custom/clientChatManager.js'
+               ])
                .pipe(sourcemaps.init())
                .pipe(concat('main.js'))
                .pipe(sourcemaps.write())
@@ -27,7 +34,12 @@ gulp.task('style:custom', function () {
                .pipe(gulp.dest('client/public'));
 });
 
+gulp.task('templates', function () {
+    return gulp.src(['client/development/templates/**.*'])
+               .pipe(gulp.dest('client/public/templates/'));
+});
+
 gulp.task('default', function () {
 
-    gulp.watch('client/development/**', ['javascript', 'style:vendor', 'style:custom']);
+    gulp.watch('client/development/**', ['javascript', 'style:vendor', 'style:custom', 'templates']);
 });

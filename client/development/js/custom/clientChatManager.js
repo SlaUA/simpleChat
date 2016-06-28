@@ -152,5 +152,5 @@
         }
     };
 
-    //jQuery(clientChatManager.init.bind(clientChatManager));
+
 })();
