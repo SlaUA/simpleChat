@@ -1,3 +1,52 @@
+$WELCOME_ROW_SIDE_PADDING = 30px;
+$WELCOME_ROW_TOP_PADDING = 20px;
+
 body
   min-width: 320px
-  background: url(/images/mainBackground.jpg) no-repeat center center black
+  background: url(/images/mainBackground.jpg) no-repeat center center black;
+
+  .welcome-wrapper
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -125px;
+    margin-left: -250px;
+    background: rgba(42, 20, 32, 1);
+    background: -moz-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(42, 20, 32, 1)), color-stop(100%, rgba(91, 46, 58, 0.9)));
+    background: -webkit-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    background: -o-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    background: -ms-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    background: linear-gradient(to right, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    border-radius: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+
+    & > div
+      height: 30px;
+      line-height: 30px;
+      color: white;
+      padding: 0 50px 0 30px;
+      margin-top: 20px;
+
+    & > input
+      color: #000;
+
+    .welcome-circle
+      position: absolute;
+      top: $WELCOME_ROW_TOP_PADDING;
+      right: 20px;
+      background: url("/images/ubuntuCircle.png");
+      width: 30px;
+      height: 30px;
+      background-size: cover;
+      padding: 0;
+      margin: 0;
+
+    .welcome-input-name
+      margin: $WELCOME_ROW_TOP_PADDING $WELCOME_ROW_SIDE_PADDING 0 $WELCOME_ROW_SIDE_PADDING;
+      padding: 5px 0;
