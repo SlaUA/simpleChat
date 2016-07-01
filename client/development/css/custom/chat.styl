@@ -7,11 +7,11 @@ body
 
   .welcome-wrapper
     width: 500px;
-    height: 250px;
+    height: 200px;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -125px;
+    margin-top: -100px;
     margin-left: -250px;
     background: rgba(42, 20, 32, 1);
     background: -moz-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
@@ -21,6 +21,7 @@ body
     background: -ms-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
     background: linear-gradient(to right, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
     border-radius: 20px;
+    border: 1px solid #361D29;
     font-family: 'Ubuntu', sans-serif;
     font-size: 25px;
     display: flex;
@@ -32,9 +33,6 @@ body
       color: white;
       padding: 0 50px 0 30px;
       margin-top: 20px;
-
-    & > input
-      color: #000;
 
     .welcome-circle
       position: absolute;
@@ -48,5 +46,27 @@ body
       margin: 0;
 
     .welcome-input-name
-      margin: $WELCOME_ROW_TOP_PADDING $WELCOME_ROW_SIDE_PADDING 0 $WELCOME_ROW_SIDE_PADDING;
-      padding: 5px 0;
+      margin: $WELCOME_ROW_TOP_PADDING $WELCOME_ROW_SIDE_PADDING 0;
+      padding: 10px;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 25px;
+      background: #200F19;
+      color: white;
+      border: 1px solid #937F86;
+      border-radius: 5px;
+
+    /:focus {
+      outline: none;
+    }
+
+@keyframes shadow {
+  from {
+    text-shadow: 0 0 3px black;
+  }
+  50% {
+    text-shadow: 0 0 30px black;
+  }
+  to {
+    text-shadow: 0 0 3px black;
+  }
+}
