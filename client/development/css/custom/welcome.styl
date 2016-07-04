@@ -1,3 +1,5 @@
+@import 'animations.styl'
+
 $WELCOME_ROW_SIDE_PADDING = 30px;
 $WELCOME_ROW_TOP_PADDING = 20px;
 
@@ -45,8 +47,42 @@ body
       padding: 0;
       margin: 0;
 
+    .welcome-circle.username-check-pending
+      animation: moveAround;
+      animation-delay: 0s;
+      animation-duration: 0.5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+
+    .welcome-username-error
+      margin: 5px $WELCOME_ROW_SIDE_PADDING;
+      color: red;
+      font-size: 17px;
+      text-transform: uppercase;
+
+    form[name="userForm"] > [class*="-row"]
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      margin-left: 30px;
+      margin-top: 10px;
+
+      [class*="-status"]
+        flex-direction: column;
+        width: 60px;
+        flex-grow: 0;
+        background: url('/images/rightWrongIcons.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        overflow: hidden;
+
+      input.ng-invalid+[class*="-status"]
+        background-position-x: -55px;
+
+      input.ng-valid+[class*="-status"]
+        background-position-x: 5px;
+
     .welcome-input-name
-      margin: $WELCOME_ROW_TOP_PADDING $WELCOME_ROW_SIDE_PADDING 0;
       padding: 10px;
       font-family: 'Ubuntu', sans-serif;
       font-size: 25px;
@@ -54,19 +90,12 @@ body
       color: white;
       border: 1px solid #937F86;
       border-radius: 5px;
+      flex-grow: 1;
+      width: 70%;
 
     /:focus {
       outline: none;
     }
 
-@keyframes shadow {
-  from {
-    text-shadow: 0 0 3px black;
-  }
-  50% {
-    text-shadow: 0 0 30px black;
-  }
-  to {
-    text-shadow: 0 0 3px black;
-  }
-}
+    .welcome-submit-username
+      display: none;

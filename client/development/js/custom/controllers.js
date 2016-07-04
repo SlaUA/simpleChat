@@ -1,9 +1,32 @@
 angular.module('controllers', ['services'])
 
-       .controller('helloController', [
-           '$scope', 'UserModule', function ($scope, UserModule) {
+       .controller('welcomeController', [
+           '$scope', 'UserModule', '$location', function ($scope, UserModule, $location) {
 
-               $scope.username = UserModule.username ? UserModule.username : 'guest';
+               $scope.username             = 'guest';
+               $scope.usernameCheckPending = false;
+               $scope.errors               = {
+                   usernameError: null
+               };
+
+               $scope.submitUsername = function ($scope) {
+
+                   switch (true) {
+
+                       case $scope.userForm.$pristine:
+                           $scope.errors.usernameError = 'Please, type your username!';
+                           break;
+
+                       case (!$scope.userForm.$valid ||
+                       $scope.usernameCheckPending):
+                           return false;
+                           break;
+
+                       default:
+                           UserModule.username = $scope.username;
+                           $location.path('/chat');
+                   }
+               };
            }
        ])
 

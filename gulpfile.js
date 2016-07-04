@@ -10,6 +10,7 @@ gulp.task('javascript', function () {
                    'client/development/js/vendor/angular-route.js',
                    'client/development/js/custom/controllers.js',
                    'client/development/js/custom/services.js',
+                   'client/development/js/custom/directives.js',
                    'client/development/js/custom/app.js',
                    'client/development/js/custom/clientChatManager.js'
                ])

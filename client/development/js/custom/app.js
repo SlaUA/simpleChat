@@ -1,12 +1,20 @@
-angular.module('chatApp', ['ngRoute', 'controllers', 'services'])
+angular.module('chatApp', ['ngRoute', 'controllers', 'services', 'directives'])
 
        .config(function ($routeProvider, $locationProvider) {
 
            $routeProvider
 
                .when('/', {
-                   templateUrl: '/templates/index.html',
-                   controller : 'helloController'
+                   templateUrl: '/templates/welcome.html',
+                   controller : 'welcomeController',
+                   resolve    : {
+                       check: function ($location, UserModule) {
+
+                           if (UserModule.isLoggedIn) {
+                               return $location.path('/chat');
+                           }
+                       }
+                   }
                })
 
                .when('/chat', {

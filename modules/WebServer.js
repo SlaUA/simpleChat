@@ -1,25 +1,28 @@
-function WebServer() {
+function WebServer(config) {
 
-    var express = require('express');
-    var path = require('path');
-    var _this   = null;
+    var express    = require('express');
+    var bodyParser = require('body-parser');
+    var _this      = null;
 
-    this.init = function (port) {
+    this.init = function () {
 
         _this = express();
 
-        _this.use(express.static('./client/public'));
+        _this.use(express.static(config.sharedFolder));
+        _this.use(bodyParser.json());
+
+        _this.post(config.usernameCheckURL, config.usernameCheck);
 
         _this.get('*', function (req, res) {
             res.render('index');
         });
 
-        _this.listen(port, function () {
-            console.log('WebServer is listening on port ' + port + '!');
+        _this.listen(config.port, function () {
+            console.log('WebServer is listening on port ' + config.port + '!');
         });
 
         _this.set('views', (process.cwd() + '/views'));
-        _this.set('view engine', 'ejs');
+        _this.set('view engine', config.viewEngine);
     };
 
     return this;
