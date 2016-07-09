@@ -13,10 +13,12 @@ angular.module('controllers', ['services'])
 
                    switch (true) {
 
+                       // user has not interacted with the form yet
                        case $scope.userForm.$pristine:
                            $scope.errors.usernameError = 'Please, type your username!';
                            break;
 
+                       // pending request or not valid
                        case (!$scope.userForm.$valid ||
                        $scope.usernameCheckPending):
                            return false;

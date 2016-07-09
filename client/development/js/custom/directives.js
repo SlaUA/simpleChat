@@ -7,17 +7,31 @@ angular.module('directives', ['services'])
                function (UserModule, $timeout) {
 
                    return {
-                       timeoutToCheck: 500,
-                       timeoutID     : -1,
-                       restrict      : 'A',
-                       require       : 'ngModel',
-                       link          : function ($scope, $element, attrs, ngModelCtrl) {
+
+                       timeoutToCheck   : 500,
+                       timeoutID        : -1,
+                       restrict         : 'A',
+                       deprecatedSymbols: new RegExp('[\\sа-я`\/\\\-=+\\(\\)]', 'gi'),
+                       require          : 'ngModel',
+
+                       link             : function ($scope, $element, attrs, ngModelCtrl) {
+
+                           // filter typing cyrillic
+                           ngModelCtrl.$parsers.push(function (username) {
+
+                               var correctUsername = username.replace(this.deprecatedSymbols, '');
+
+                               if (correctUsername !== username) {
+                                   ngModelCtrl.$setViewValue(correctUsername);
+                                   ngModelCtrl.$render();
+                               }
+                               return correctUsername.trim();
+                           }.bind(this));
 
                            // change view function callback
                            ngModelCtrl.$parsers.unshift(function (username) {
 
                                clearTimeout(this.timeoutID);
-
                                $scope.usernameCheckPending = true;
 
                                this.timeoutID = setTimeout(function () {
@@ -45,10 +59,10 @@ angular.module('directives', ['services'])
 
                            $timeout(function () {
 
-                               // select intitial username
+                               // select initial username
                                $element[0].setSelectionRange(0, $element.val().length);
                                ngModelCtrl.$setValidity('username', false);
-                           }, 0)
+                           }, 0);
                        }
                    };
                }
