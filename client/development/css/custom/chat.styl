@@ -1,0 +1,117 @@
+body, a:hover, textarea, input
+  cursor: url(/images/cursor.gif), url(/images/cursor.cur), default;
+
+div[ng-view]
+  height: 100%;
+
+  .chat-wrapper
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .chat-window
+      width: 800px;
+      background: #F2F1F0;
+      border-radius: 4px;
+
+      .chat-header-wrapper
+        background: linear-gradient(to bottom, #4B4A45, #464540, #3E3D38);
+        position: relative;
+        height: 20px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+
+        .chat-window-name
+          position: absolute;
+          left: 10px;
+          top: 1px;
+          font-family: 'Ubuntu', sans-serif;
+          font-weight: 500;
+          color: #DFDBD2;
+          font-size: 17px;
+
+        .chat-control-buttons-wrapper
+          position: absolute;
+          right: 10px;
+          top: 1px;
+          display: flex;
+
+          .chat-control-button
+            width: 16px;
+            height: 16px;
+            background-repeat: no-repeat;
+            background-size: initial;
+            display: flex;
+            cursor: pointer;
+
+          /.chat-collapse
+            background: url(/images/collapse.png);
+
+          /.chat-expand
+            background: url(/images/expand.png);
+
+          /.chat-close
+            background: url(/images/close.png);
+
+      .chat-main-wrapper
+        min-height: 500px;
+        display: flex;
+        flex-direction: row;
+
+        .chat-users-online-layout
+          width: 30%;
+          background-color: #DDDDDD;
+          flex-shrink: 0;
+          min-width: 200px;
+          display: flex;
+          flex-direction: column;
+
+          .chat-users-online-header
+            font-family: 'Ubuntu', sans-serif;
+            padding: 10px;
+            font-size: 18px;
+
+          .chat-users-online-list
+            flex-grow: 1;
+            padding: 10px;
+
+        .chat-messages-layout
+          flex-grow 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 350px;
+
+          .chat-messages-wrapper
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: scroll;
+
+            .chat-message
+              display: flex;
+              flex-direction: row;
+
+              .chat-message-info
+                width: 25%;
+                flex-shrink: 0;
+
+              .chat-message-text
+                width: 75%;
+                flex-shrink: 0;
+
+          .chat-type-wrapper
+            flex-grow: 1;
+            display: flex;
+            max-height: 55px;
+
+            .chat-type-area
+              flex-grow: 1;
+              padding: 5px;
+              font-family: Ubuntu, sans-serif;
+              font-size: 18px;
+              border: none;
+              margin: 0;
+              resize: none;
+
+            /:focus
+              outline: none;
