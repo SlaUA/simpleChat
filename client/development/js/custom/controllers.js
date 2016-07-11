@@ -32,10 +32,26 @@ angular.module('controllers', ['services'])
            }
        ])
 
+       .controller('chatController', [
+           '$scope', 'UserModule', 'ChatModule', function ($scope, UserModule, ChatModule) {
+
+               debugger;
+               var chatManager = {};
+
+               /**
+                * Triggers when message arrives from server
+                * @param {object} message - object with data and action to run
+                */
+               var onChatMessageSent = function (message) {
+
+                   if (this.connection.id === message.from) {
+                       return;
+                   }
+                   this.playSound(this.soundsMap.MESSAGE_ARRIVED);
+               };
+           }
+       ])
+
        .controller('aboutController', function ($scope) {
-
-       })
-
-       .controller('chatController', function ($scope) {
 
        });
