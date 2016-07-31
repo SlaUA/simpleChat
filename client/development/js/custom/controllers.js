@@ -45,10 +45,11 @@ angular.module('controllers', ['services'])
                    address   : 'ws://localhost:3000',
 
                    eventsMap: {
-                       connect            : ['onConnect'],
-                       sendMessageToChat  : ['sendChatMessage'],
-                       sendMessageToServer: ['sendServerMessage'],
-                       newMessageInChat   : ['onNewChatMessage']
+                       connect             : ['onConnect'],
+                       sendMessageToChat   : ['sendChatMessage'],
+                       sendMessageToServer : ['sendServerMessage'],
+                       newMessageInChat    : ['onNewChatMessage'],
+                       onlineUsersListFetch: ['onFetchOnlineUsers']
                    },
 
                    clientActions: {
@@ -64,6 +65,7 @@ angular.module('controllers', ['services'])
                        }
 
                        $scope.chatMessages = [];
+                       $scope.onlineUsers  = [];
 
                        this.connection = window.io(this.address);
                        this.subscribeForEvents();
@@ -71,12 +73,18 @@ angular.module('controllers', ['services'])
 
                    onConnect: function () {
 
-                       console.log('connected!');
+                       this.triggerEvent('sendMessageToServer', 'connectSuccess');
                    },
 
                    onNewChatMessage: function (messageData) {
 
                        $scope.chatMessages.push(messageData);
+                       $scope.$apply();
+                   },
+
+                   onFetchOnlineUsers: function (usersList) {
+
+                       $scope.onlineUsers = usersList;
                        $scope.$apply();
                    },
 
@@ -117,6 +125,10 @@ angular.module('controllers', ['services'])
                     */
                    sendServerMessage: function (action, message) {
 
+                       if (!action) {
+                           return;
+                       }
+
                        this.publishAction(action, message);
                    },
 
@@ -154,6 +166,10 @@ angular.module('controllers', ['services'])
                     * @param {String} [messageText] text to send
                     */
                    publishAction: function (action, messageText) {
+
+                       if (!action) {
+                           return;
+                       }
 
                        this.connection.emit(action, {
                            messageText : messageText,

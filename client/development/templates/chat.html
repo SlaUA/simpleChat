@@ -11,7 +11,9 @@
         <div class="chat-main-wrapper">
             <div class="chat-users-online-layout">
                 <div class="chat-users-online-header">Online now:</div>
-                <div class="chat-users-online-list"></div>
+                <div class="chat-users-online-list">
+                    <online-chat-user ng-repeat="user in onlineUsers"></online-chat-user>
+                </div>
             </div>
             <div class="chat-messages-layout">
                 <div class="chat-messages-wrapper">

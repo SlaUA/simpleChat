@@ -7,27 +7,31 @@ body
   min-width: 320px
   background: url(/images/mainBackground.jpg) no-repeat center center black;
 
+  [ng-view]{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+  }
+
   .welcome-wrapper
-    width: 500px;
-    height: 200px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -250px;
-    background: rgba(42, 20, 32, 1);
-    background: -moz-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(42, 20, 32, 1)), color-stop(100%, rgba(91, 46, 58, 0.9)));
-    background: -webkit-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
-    background: -o-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
-    background: -ms-linear-gradient(left, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
-    background: linear-gradient(to right, rgba(42, 20, 32, 1) 0%, rgba(91, 46, 58, 0.9) 100%);
+    position: relative;
+    background: #2a1420;
+    background: -webkit-gradient(left top, right top, color-stop(0%, #2a1420), color-stop(100%, rgba(91,46,58,0.9)));
+    background: -webkit-linear-gradient(left, #2a1420 0%, rgba(91,46,58,0.9) 100%);
+    background: linear-gradient(to right, #2a1420 0%, rgba(91,46,58,0.9) 100%);
     border-radius: 20px;
-    border: 1px solid #361D29;
+    border: 1px solid #361d29;
     font-family: 'Ubuntu', sans-serif;
     font-size: 25px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    flex-wrap: wrap;
+    align-self: center;
 
     & > div
       height: 30px;
@@ -64,8 +68,7 @@ body
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
-      margin-left: 30px;
-      margin-top: 10px;
+      margin: 10px 0 20px 30px;
 
       [class*="-status"]
         flex-direction: column;

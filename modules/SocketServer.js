@@ -12,12 +12,14 @@ function SocketServer(port) {
 
     this.init = function () {
 
-        _this = io(server);
+        _this      = io(server);
         _this.chat = Chat(_this);
         _this.chat.init();
 
         server.listen(port, function () {
 
+            global.socketConnectedClients            = _this.sockets.connected;
+            global.socketConnectedClients['/#guest'] = {username: 'guest'};
             console.log('SocketServer is listening on port ' + port + '!');
         });
     };

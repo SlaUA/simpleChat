@@ -7,16 +7,31 @@ var webServerConfig = {
     viewEngine      : 'ejs',
     usernameCheckURL: '/checkUsername',
 
-    // TODO: add global array of usernames
-    invalidUsernames: ['slava', 'slaua', 'guest'],
+    usernameCheck: function usernameCheck(req, res) {
 
-    usernameCheck   : function usernameCheck(req, res) {
+        var isValid = webServerConfig.checkUsernameIsExists(req.body.username);
 
-        var isValid = webServerConfig.invalidUsernames.indexOf(req.body.username) === -1;
         res.json({
             valid: isValid,
             error: isValid ? null : 'username exists'
         });
+    },
+
+    checkUsernameIsExists: function (username) {
+
+        var isValid = true;
+
+        for (var client in global.socketConnectedClients) {
+            if (!global.socketConnectedClients.hasOwnProperty(client)) {
+                continue;
+            }
+            if (global.socketConnectedClients[client].username === username) {
+                isValid = false;
+                break;
+            }
+        }
+
+        return isValid;
     }
 };
 

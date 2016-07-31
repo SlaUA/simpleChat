@@ -66,7 +66,6 @@ angular.module('directives', ['services'])
                };
            }
        ])
-
        .directive('chatSubmit', [
 
            function () {
@@ -93,13 +92,19 @@ angular.module('directives', ['services'])
                };
            }
        ])
-
        .directive('chatMessage', [
-               function () {
-                   return {
-                       restrict   : 'E',
-                       templateUrl: '/templates/chatMessage.html'
-                   }
+           function () {
+               return {
+                   restrict   : 'E',
+                   templateUrl: '/templates/chatMessage.html'
                }
-           ]
-       );
+           }
+       ])
+       .directive('onlineChatUser', [
+           function () {
+               return {
+                   restrict   : 'E',
+                   templateUrl: '/templates/onlineChatUser.html'
+               }
+           }
+       ]);
