@@ -1,69 +1,95 @@
 angular.module('directives', ['services'])
-       .directive(
-           'usernameChecker',
-           [
-               'UserModule',
-               '$timeout',
-               function (UserModule, $timeout) {
 
-                   return {
+       .directive('usernameChecker', [
+           'UserModule',
+           '$timeout',
+           function (UserModule, $timeout) {
 
-                       timeoutToCheck   : 500,
-                       timeoutID        : -1,
-                       restrict         : 'A',
-                       deprecatedSymbols: new RegExp('[\\sа-я`\/\\\-=+\\(\\)]', 'gi'),
-                       require          : 'ngModel',
+               return {
 
-                       link             : function ($scope, $element, attrs, ngModelCtrl) {
+                   timeoutToCheck   : 500,
+                   timeoutID        : -1,
+                   restrict         : 'A',
+                   deprecatedSymbols: new RegExp('[\\sа-я`\/\\\-=+\\(\\)]', 'gi'),
+                   require          : 'ngModel',
 
-                           // filter typing cyrillic
-                           ngModelCtrl.$parsers.push(function (username) {
+                   link: function ($scope, $element, attrs, ngModelCtrl) {
 
-                               var correctUsername = username.replace(this.deprecatedSymbols, '');
+                       // filter typing cyrillic
+                       ngModelCtrl.$parsers.push(function (username) {
 
-                               if (correctUsername !== username) {
-                                   ngModelCtrl.$setViewValue(correctUsername);
-                                   ngModelCtrl.$render();
+                           var correctUsername = username.replace(this.deprecatedSymbols, '');
+
+                           if (correctUsername !== username) {
+                               ngModelCtrl.$setViewValue(correctUsername);
+                               ngModelCtrl.$render();
+                           }
+                           return correctUsername.trim();
+                       }.bind(this));
+
+                       // change view function callback
+                       ngModelCtrl.$parsers.unshift(function (username) {
+
+                           clearTimeout(this.timeoutID);
+                           $scope.usernameCheckPending = true;
+
+                           this.timeoutID = setTimeout(function () {
+
+                               if (!username ||
+                                   username.length < 3) {
+
+                                   ngModelCtrl.$setValidity('username', false);
+                                   $scope.errors.usernameError = 'Username is too short!';
+                                   $scope.usernameCheckPending = false;
+                                   return $scope.$apply();
                                }
-                               return correctUsername.trim();
-                           }.bind(this));
 
-                           // change view function callback
-                           ngModelCtrl.$parsers.unshift(function (username) {
+                               UserModule.checkUsername(username)
+                                         .then(function (response) {
 
-                               clearTimeout(this.timeoutID);
-                               $scope.usernameCheckPending = true;
+                                             ngModelCtrl.$setValidity('username', response.data.valid);
+                                             $scope.errors.usernameError = response.data.error;
+                                             $scope.usernameCheckPending = false;
+                                         });
+                           }, this.timeoutToCheck);
 
-                               this.timeoutID = setTimeout(function () {
+                           return username;
+                       }.bind(this));
 
-                                   if (!username ||
-                                       username.length < 3) {
+                       $timeout(function () {
 
-                                       ngModelCtrl.$setValidity('username', false);
-                                       $scope.errors.usernameError = 'Username is too short!';
-                                       $scope.usernameCheckPending = false;
-                                       return $scope.$apply();
-                                   }
+                           // select initial username
+                           $element[0].setSelectionRange(0, $element.val().length);
+                           ngModelCtrl.$setValidity('username', false);
+                       }, 0);
+                   }
+               };
+           }
+       ])
 
-                                   UserModule.checkUsername(username)
-                                             .then(function (response) {
+       .directive('chatSubmit', [
 
-                                                 ngModelCtrl.$setValidity('username', response.data.valid);
-                                                 $scope.errors.usernameError = response.data.error;
-                                                 $scope.usernameCheckPending = false;
-                                             });
-                               }, this.timeoutToCheck);
+           function () {
 
-                               return username;
-                           }.bind(this));
+               return {
 
-                           $timeout(function () {
+                   ENTER_KEY_CODE: 13,
+                   restrict      : 'A',
 
-                               // select initial username
-                               $element[0].setSelectionRange(0, $element.val().length);
-                               ngModelCtrl.$setValidity('username', false);
-                           }, 0);
-                       }
-                   };
-               }
-           ]);
+                   link: function ($scope, $element) {
+
+                       $element.bind("keydown keypress", function (event) {
+
+                           var $this = angular.element(event.target),
+                               messageValue = $this.val().trim();
+
+                           if (event.which === this.ENTER_KEY_CODE) {
+                               event.preventDefault();
+                               $this.val('');
+                               $scope.$emit('enterPressToSendMessage', messageValue);
+                           }
+                       }.bind(this));
+                   }
+               };
+           }
+       ]);

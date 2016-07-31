@@ -1,4 +1,4 @@
-function SocketServer() {
+function SocketServer(port) {
 
     var server = require('http').createServer();
     var io     = require('socket.io');
@@ -10,7 +10,7 @@ function SocketServer() {
      */
     this.chat = null;
 
-    this.init = function (port) {
+    this.init = function () {
 
         _this = io(server);
         _this.chat = Chat(_this);

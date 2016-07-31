@@ -32,132 +32,134 @@ angular.module('services', [])
            }
        })
 
-       .factory('ChatModule', function () {
+       .factory('ChatModule', [
+           '$q', function ($q) {
 
-           var chat = {
+               var chat = {
 
-               connection: null,
-               address   : 'ws://localhost:3000',
+                   connection: null,
 
-               _actionsFromServerMap: {
-                   CHAT_MESSAGE_SENT: 'onChatMessage',
-                   SERVER_MESSAGE   : 'onServerMessage'
-               },
+                   address: 'ws://localhost:3000',
 
-               _clientActionsMap: {
-                   SEND_CHAT_MESSAGE  : 'SEND_CHAT_MESSAGE',
-                   SEND_SERVER_MESSAGE: 'SEND_SERVER_MESSAGE'
-               },
+                   _actionsFromServerMap: {
+                       CHAT_MESSAGE_SENT: 'onChatMessage'
+                   },
 
-               _chatMessageCallbacks   : [],
-               _serverMessagesCallbacks: [],
+                   _clientActionsMap: {
+                       SEND_CHAT_MESSAGE: 'SEND_CHAT_MESSAGE'
+                   },
 
-               init: function () {
+                   _stackedMessages: [],
 
-                   if (this.connection) {
-                       return;
+                   init: function () {
+
+                       var connected = $q.defer();
+
+                       if (this.connection) {
+                           throw new Error('connection already instantiated');
+                       }
+
+                       this.connection = window.io(this.address);
+                       this.connection
+                           .on('connect', this.onConnect.bind(this, connected));
+
+                       return connected.promise;
+                   },
+
+                   onConnect: function (connectedDeferred) {
+
+                       this.sendStackedMessages();
+                       connectedDeferred.resolve();
+                   },
+
+                   getConnection: function () {
+
+                       return this.connection;
+                   },
+
+                   sendStackedMessages: function () {
+
+                       this._stackedMessages
+                           .forEach(function (message) {
+
+                               this.sendChatMessage(message);
+                           }.bind(this));
+
+                       this._stackedMessages = [];
+                   },
+
+                   /**
+                    * @param callback {function} callback for chat message
+                    * @param context {object} context for callback
+                    */
+                   subscribeForChatMessage: function (callback, context) {
+
+                       this.connection.on(this._actionsFromServerMap.CHAT_MESSAGE_SENT, callback.bind(context));
+                   },
+
+                   /**
+                    * @param action {String} action name
+                    * @param callback {Function} callback for chat message
+                    * @param context {Object} context for callback
+                    */
+                   subscribeForServerAction: function (action, callback, context) {
+
+                       if (typeof callback !== 'function') {
+                           throw new Error('callback must be a function');
+                       }
+                       this.connection.on(action, callback.bind(context));
+                   },
+
+                   /**
+                    * sends message to chat
+                    * @param message {String} message to send
+                    */
+                   sendChatMessage: function (message) {
+
+                       if (!message) {
+                           return;
+                       }
+
+                       if (!(this.connection &&
+                           this.connection.id)) {
+                           this._stackedMessages.push(message);
+                           return;
+                       }
+
+                       this.publishAction(this._clientActionsMap.SEND_CHAT_MESSAGE, message);
+                   },
+
+                   /**
+                    *
+                    * @param action {String} action name
+                    * @param [message] {String|Number|Object} data to send
+                    */
+                   sendServerMessage: function (action, message) {
+
+                       this.publishAction(action, message);
+                   },
+
+                   /**
+                    * Emits message with some data
+                    * @param {String} action, command to run with data
+                    * @param {String} [message] text to send
+                    */
+                   publishAction: function (action, message) {
+
+                       this.connection.emit(action, {
+                           message: message,
+                           from   : this.connection.id
+                       });
                    }
+               };
 
-                   this.connection = window.io(this.address);
-                   this.connection.on('message', this.onMessageFromServer.bind(this));
-               },
-
-               /**
-                * Main proxy from server for messages
-                * @param {string} data - message and action in JSON format
-                */
-               onMessageFromServer: function (data) {
-
-                   var message;
-
-                   try {
-                       message = JSON.parse(data);
-                   } catch (e) {
-                       return;
-                   }
-
-                   if (!(message.action && message.action in this._actionsFromServerMap)) {
-                       return;
-                   }
-
-                   this[this._actionsFromServerMap[message.action]].call(this, message);
-               },
-
-               /**
-                * @param callback {Function} callback for chat message
-                */
-               addChatMessageListener: function (callback) {
-
-                   this._chatMessageCallbacks.push(callback);
-               },
-
-               /**
-                * @param callback {Function} callback for server message
-                */
-               addServerMessageListener: function (callback) {
-
-                   this._serverMessagesCallbacks.push(callback);
-               },
-
-               /**
-                * Triggers when chat message arrives from server
-                * @param {object} message - object with data and action to run
-                */
-               onChatMessage: function (message) {
-
-                   this._chatMessageCallbacks.forEach(function (callback) {
-
-                       callback.call(undefined, message);
-                   });
-               },
-
-               /**
-                * Triggers when server message arrives from server
-                * @param {object} message - object with data and action to run
-                */
-               onServerMessage: function (message) {
-
-                   this._serverMessagesCallbacks.forEach(function (callback) {
-
-                       callback.call(undefined, message);
-                   });
-               },
-
-               sendChatMessage: function (message) {
-
-                   this.publishAction(this._clientActionsMap.SEND_CHAT_MESSAGE, message);
-               },
-
-               sendServerMessage: function (message) {
-
-                   this.publishAction(this._clientActionsMap.SEND_SERVER_MESSAGE, message);
-               },
-
-               /**
-                * Emits message with some data
-                * @param {String} action, command to run with data
-                * @param {String} [data] text to send
-                */
-               publishAction: function (action, data) {
-
-                   if (action === this._clientActionsMap.SEND_CHAT_MESSAGE && !data) {
-                       return;
-                   }
-
-                   var infoToSend = {
-                       action: action,
-                       data  : data,
-                       from  : this.connection.id
-                   };
-                   this.connection.emit('message', JSON.stringify(infoToSend));
+               return {
+                   init                    : chat.init.bind(chat),
+                   sendChatMessage         : chat.sendChatMessage.bind(chat),
+                   sendServerMessage       : chat.sendServerMessage.bind(chat),
+                   subscribeForChatMessage : chat.subscribeForChatMessage.bind(chat),
+                   subscribeForServerAction: chat.subscribeForServerAction.bind(chat),
+                   getConnection           : chat.getConnection.bind(chat)
                }
-           };
-
-           return {
-               init                    : chat.init.bind(chat),
-               sendChatMessage         : chat.sendChatMessage.bind(chat),
-               sendServerMessage       : chat.sendServerMessage.bind(chat),
-               addChatMessageListener  : chat.addChatMessageListener.bind(chat),
-               addServerMessageListener: chat.addServerMessageListener.bind(chat)
            }
-       });
+       ]);

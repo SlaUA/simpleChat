@@ -21,7 +21,7 @@ var webServerConfig = {
 };
 
 var httpServer = new WebServer(webServerConfig);
-var wsServer   = new SocketServer();
+var wsServer   = new SocketServer(3000);
 
 httpServer.init();
-wsServer.init(3000);
+wsServer.init();

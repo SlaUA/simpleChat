@@ -33,22 +33,62 @@ angular.module('controllers', ['services'])
        ])
 
        .controller('chatController', [
-           '$scope', 'UserModule', 'ChatModule', function ($scope, UserModule, ChatModule) {
+           '$scope',
+           'UserModule',
+           'ChatModule',
+           function ($scope, UserModule, ChatModule) {
 
-               debugger;
-               var chatManager = {};
+               var chatManager = {
 
-               /**
-                * Triggers when message arrives from server
-                * @param {object} message - object with data and action to run
-                */
-               var onChatMessageSent = function (message) {
+                   actionsFromServerMap    : {},
+                   clientToServerActionsMap: {},
 
-                   if (this.connection.id === message.from) {
-                       return;
+                   $messagesWrapper: null,
+
+                   init: function () {
+
+                       this.$messagesWrapper = jQuery('.chat-messages-wrapper');
+
+                       ChatModule.init()
+                                 .then(this.subscribeForActions.bind(this));
+                   },
+
+                   subscribeForActions: function () {
+
+                       ChatModule.subscribeForChatMessage(this.onChatMessage, this);
+
+                       for (var action in this.actionsFromServerMap) {
+                           if (!this.actionsFromServerMap.hasOwnProperty(action)) {
+                               continue;
+                           }
+                           ChatModule.subscribeForServerAction(action, this[this.actionsFromServerMap[action]], this);
+                       }
+
+                       $scope.$on('enterPressToSendMessage', function (event, textToSend) {
+
+                           chatManager.sendMessageToChat(textToSend);
+                       });
+                   },
+
+                   /**
+                    * Triggers when message arrives from server
+                    * @param {object} message - object with data and action to run
+                    */
+                   onChatMessage: function (message) {
+
+                       if (ChatModule.getConnection().id === message.from) {
+                           return;
+                       }
+                       //this.playSound(this.soundsMap.MESSAGE_ARRIVED);
+                   },
+
+                   sendMessageToChat: function (message) {
+
+                       ChatModule.sendChatMessage(message);
                    }
-                   this.playSound(this.soundsMap.MESSAGE_ARRIVED);
                };
+
+               chatManager.init();
            }
        ])
 
