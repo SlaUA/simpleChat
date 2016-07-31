@@ -14,7 +14,9 @@
                 <div class="chat-users-online-list"></div>
             </div>
             <div class="chat-messages-layout">
-                <div class="chat-messages-wrapper"></div>
+                <div class="chat-messages-wrapper">
+                    <chat-message ng-repeat="message in chatMessages"></chat-message>
+                </div>
                 <div class="chat-type-wrapper">
                     <textarea
                             data-chat-submit

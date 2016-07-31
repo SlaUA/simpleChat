@@ -55,7 +55,7 @@ div[ng-view]
             background: url(/images/close.png);
 
       .chat-main-wrapper
-        min-height: 500px;
+        height: 500px;
         display: flex;
         flex-direction: row;
 
@@ -87,17 +87,24 @@ div[ng-view]
             padding: 10px;
             overflow-y: scroll;
 
-            .chat-message
-              display: flex;
-              flex-direction: row;
+            chat-message {
+              display: block;
+              margin-bottom: 3px;
+            }
 
-              .chat-message-info
-                width: 25%;
-                flex-shrink: 0;
+            chat-message:after {
+              content: '';
+              display: table;
+              clear: both;
+            }
 
-              .chat-message-text
-                width: 75%;
-                flex-shrink: 0;
+            .chat-message-info
+              float: left;
+              margin-right: 10px;
+
+            .chat-message-text
+              width: auto;
+              word-wrap: break-word;
 
           .chat-type-wrapper
             flex-grow: 1;

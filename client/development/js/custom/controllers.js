@@ -37,8 +37,6 @@ angular.module('controllers', ['services'])
            'UserModule',
            function ($scope, UserModule) {
 
-               var $messagesWrapper = jQuery('.chat-messages-wrapper');
-
                var chatManager = {
 
                    _stackedMessages: [],
@@ -65,18 +63,21 @@ angular.module('controllers', ['services'])
                            throw new Error('connection already instantiated');
                        }
 
+                       $scope.chatMessages = [];
+
                        this.connection = window.io(this.address);
                        this.subscribeForEvents();
                    },
 
                    onConnect: function () {
 
-                       console.log('connected');
+                       console.log('connected!');
                    },
 
-                   onNewChatMessage: function (options) {
+                   onNewChatMessage: function (messageData) {
 
-                       console.log('user "' + options.usernameFrom + '" said:' + options.message);
+                       $scope.chatMessages.push(messageData);
+                       $scope.$apply();
                    },
 
                    sendStackedMessages: function () {
@@ -128,7 +129,7 @@ angular.module('controllers', ['services'])
                            this.connection.on(event, this.triggerEvent.bind(this, event));
                        }
 
-                       $scope.$on('enterPressToSendMessage', function (event, textToSend) {
+                       $scope.$on('keyPressedToSendMessage', function (event, textToSend) {
 
                            this.triggerEvent('sendMessageToChat', textToSend);
                        }.bind(this));
@@ -150,14 +151,15 @@ angular.module('controllers', ['services'])
                    /**
                     * Emits message with some data
                     * @param {String} action, command to run with data
-                    * @param {String} [message] text to send
+                    * @param {String} [messageText] text to send
                     */
-                   publishAction: function (action, message) {
+                   publishAction: function (action, messageText) {
 
                        this.connection.emit(action, {
-                           message     : message,
+                           messageText : messageText,
                            idFrom      : this.connection.id,
-                           usernameFrom: UserModule.username
+                           usernameFrom: UserModule.username,
+                           messageDate : new Date()
                        });
                    }
                };

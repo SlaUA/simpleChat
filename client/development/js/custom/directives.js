@@ -80,16 +80,26 @@ angular.module('directives', ['services'])
 
                        $element.bind("keydown keypress", function (event) {
 
-                           var $this = angular.element(event.target),
+                           var $this        = angular.element(event.target),
                                messageValue = $this.val().trim();
 
                            if (event.which === this.ENTER_KEY_CODE) {
                                event.preventDefault();
                                $this.val('');
-                               $scope.$emit('enterPressToSendMessage', messageValue);
+                               $scope.$emit('keyPressedToSendMessage', messageValue);
                            }
                        }.bind(this));
                    }
                };
            }
-       ]);
+       ])
+
+       .directive('chatMessage', [
+               function () {
+                   return {
+                       restrict   : 'E',
+                       templateUrl: '/templates/chatMessage.html'
+                   }
+               }
+           ]
+       );
