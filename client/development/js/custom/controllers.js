@@ -35,63 +35,133 @@ angular.module('controllers', ['services'])
        .controller('chatController', [
            '$scope',
            'UserModule',
-           'ChatModule',
-           function ($scope, UserModule, ChatModule) {
+           function ($scope, UserModule) {
+
+               var $messagesWrapper = jQuery('.chat-messages-wrapper');
 
                var chatManager = {
 
-                   actionsFromServerMap    : {},
-                   clientToServerActionsMap: {},
+                   _stackedMessages: [],
 
-                   $messagesWrapper: null,
+                   connection: null,
+                   address   : 'ws://localhost:3000',
+
+                   eventsMap: {
+                       connect            : ['onConnect'],
+                       sendMessageToChat  : ['sendChatMessage'],
+                       sendMessageToServer: ['sendServerMessage'],
+                       newMessageInChat   : ['onNewChatMessage']
+                   },
+
+                   clientActions: {
+                       SEND_CHAT_MESSAGE: 'sendChatMessage'
+                   },
+
+                   clientToServerActionsMap: {},
 
                    init: function () {
 
-                       this.$messagesWrapper = jQuery('.chat-messages-wrapper');
+                       if (this.connection) {
+                           throw new Error('connection already instantiated');
+                       }
 
-                       ChatModule.init()
-                                 .then(this.subscribeForActions.bind(this));
+                       this.connection = window.io(this.address);
+                       this.subscribeForEvents();
                    },
 
-                   subscribeForActions: function () {
+                   onConnect: function () {
 
-                       ChatModule.subscribeForChatMessage(this.onChatMessage, this);
+                       console.log('connected');
+                   },
 
-                       for (var action in this.actionsFromServerMap) {
-                           if (!this.actionsFromServerMap.hasOwnProperty(action)) {
+                   onNewChatMessage: function (options) {
+
+                       console.log('user "' + options.usernameFrom + '" said:' + options.message);
+                   },
+
+                   sendStackedMessages: function () {
+
+                       this._stackedMessages
+                           .forEach(function (message) {
+
+                               this.publishAction(this.clientActions.SEND_CHAT_MESSAGE, message);
+                           }.bind(this));
+
+                       this._stackedMessages = [];
+                   },
+
+                   /**
+                    * sends message to chat
+                    * @param message {String} message to send
+                    */
+                   sendChatMessage: function (message) {
+
+                       if (!message) {
+                           return;
+                       }
+
+                       if (!(this.connection &&
+                           this.connection.id)) {
+                           this._stackedMessages.push(message);
+                           return;
+                       }
+
+                       this.publishAction(this.clientActions.SEND_CHAT_MESSAGE, message);
+                   },
+
+                   /**
+                    *
+                    * @param action {String} action name
+                    * @param [message] {String|Number|Object} data to send
+                    */
+                   sendServerMessage: function (action, message) {
+
+                       this.publishAction(action, message);
+                   },
+
+                   subscribeForEvents: function () {
+
+                       for (var event in this.eventsMap) {
+                           if (!this.eventsMap.hasOwnProperty(event)) {
                                continue;
                            }
-                           ChatModule.subscribeForServerAction(action, this[this.actionsFromServerMap[action]], this);
+                           this.connection.on(event, this.triggerEvent.bind(this, event));
                        }
 
                        $scope.$on('enterPressToSendMessage', function (event, textToSend) {
 
-                           chatManager.sendMessageToChat(textToSend);
-                       });
+                           this.triggerEvent('sendMessageToChat', textToSend);
+                       }.bind(this));
+                   },
+
+                   triggerEvent: function (event, options) {
+
+                       this.eventsMap[event] &&
+                       this.eventsMap[event].forEach &&
+                       this.eventsMap[event].forEach(function (callbackName) {
+
+                           if (typeof this[callbackName] !== 'function') {
+                               return;
+                           }
+                           this[callbackName].call(this, options);
+                       }.bind(this));
                    },
 
                    /**
-                    * Triggers when message arrives from server
-                    * @param {object} message - object with data and action to run
+                    * Emits message with some data
+                    * @param {String} action, command to run with data
+                    * @param {String} [message] text to send
                     */
-                   onChatMessage: function (message) {
+                   publishAction: function (action, message) {
 
-                       if (ChatModule.getConnection().id === message.from) {
-                           return;
-                       }
-                       //this.playSound(this.soundsMap.MESSAGE_ARRIVED);
-                   },
-
-                   sendMessageToChat: function (message) {
-
-                       ChatModule.sendChatMessage(message);
+                       this.connection.emit(action, {
+                           message     : message,
+                           idFrom      : this.connection.id,
+                           usernameFrom: UserModule.username
+                       });
                    }
                };
 
                chatManager.init();
            }
-       ])
-
-       .controller('aboutController', function ($scope) {
-
-       });
+       ]);

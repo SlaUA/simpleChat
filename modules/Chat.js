@@ -5,12 +5,11 @@ function Chat(server) {
     }
 
     this._actionsFromClientMap = {
-        SEND_CHAT_MESSAGE: 'onSendMessageToChat'
+        sendChatMessage: 'onSendMessageToChat'
     };
 
     this._serverCommandsMap = {
-        CLIENT_CONNECTED : 'CLIENT_CONNECTED',
-        CHAT_MESSAGE_SENT: 'CHAT_MESSAGE_SENT'
+        newMessageInChat: 'newMessageInChat'
     };
 
     this.server = server;
@@ -34,7 +33,7 @@ function Chat(server) {
 
     this.onSendMessageToChat = function (data) {
 
-        this.server.sockets.emit(this._serverCommandsMap.CHAT_MESSAGE_SENT, data);
+        this.server.sockets.emit(this._serverCommandsMap.newMessageInChat, data);
     };
 }
 
