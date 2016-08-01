@@ -53,7 +53,8 @@ angular.module('controllers', ['services'])
                    },
 
                    clientActions: {
-                       SEND_CHAT_MESSAGE: 'sendChatMessage'
+                       SEND_CHAT_MESSAGE     : 'sendChatMessage',
+                       CONNECTED_SUCCESSFULLY: 'connectSuccess'
                    },
 
                    clientToServerActionsMap: {},
@@ -73,7 +74,7 @@ angular.module('controllers', ['services'])
 
                    onConnect: function () {
 
-                       this.triggerEvent('sendMessageToServer', 'connectSuccess');
+                       this.triggerEvent('sendMessageToServer', this.clientActions.CONNECTED_SUCCESSFULLY);
                    },
 
                    onNewChatMessage: function (messageData) {

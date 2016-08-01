@@ -7,7 +7,7 @@ function Chat(server) {
     this.eventsMap = {
         sendChatMessage: ['emitNewChatMessage'],
         connectSuccess : ['saveUserData', 'sendOnlineUsersList'],
-        disconnect     : ['removeUserData', 'sendOnlineUsersList']
+        disconnect     : ['sendOnlineUsersList']
     };
 
     this.serverCommandsMap = {
@@ -39,7 +39,18 @@ function Chat(server) {
 
     this.sendOnlineUsersList = function () {
 
-        this.server.sockets.emit(this.serverCommandsMap.giveOnlineUsersList);
+        var usersOnline = [];
+
+        for (var user in global.socketConnectedClients) {
+            if (!(global.socketConnectedClients.hasOwnProperty(user) &&
+                global.socketConnectedClients[user].username &&
+                global.socketConnectedClients[user].username !== 'guest')) {
+                continue;
+            }
+            usersOnline.push(global.socketConnectedClients[user].username);
+        }
+
+        this.server.sockets.emit(this.serverCommandsMap.giveOnlineUsersList, usersOnline);
     };
 
     this.saveUserData = function (data) {
@@ -48,10 +59,6 @@ function Chat(server) {
             return;
         }
         this.server.sockets.connected['/#' + data.idFrom].username = data.usernameFrom;
-    };
-
-    this.removeUserData = function (data) {
-
     };
 
     this.triggerEvent = function (event, data) {
