@@ -11,11 +11,19 @@ function WebServer(config) {
         _this.use(express.static(config.sharedFolder));
         _this.use(bodyParser.json());
 
-        _this.post(config.usernameCheckURL, config.usernameCheck);
+        for (var postURL in config.POST_REQUESTS_MAP) {
+            if (!config.POST_REQUESTS_MAP.hasOwnProperty(postURL)) {
+                continue;
+            }
+            _this.post(postURL, config[config.POST_REQUESTS_MAP[postURL]]);
+        }
 
-        _this.get('*', function (req, res) {
-            res.render('index');
-        });
+        for (var getURL in config.GET_REQUESTS_MAP) {
+            if (!config.GET_REQUESTS_MAP.hasOwnProperty(getURL)) {
+                continue;
+            }
+            _this.get(getURL, config[config.GET_REQUESTS_MAP[getURL]]);
+        }
 
         _this.listen(config.port, function () {
             console.log('WebServer is listening on port ' + config.port + '!');

@@ -19,7 +19,9 @@ function SocketServer(port) {
         server.listen(port, function () {
 
             global.socketConnectedClients            = _this.sockets.connected;
-            global.socketConnectedClients['/#guest'] = {username: 'guest'};
+            global.socketConnectedClients['/#guest'] = {
+                username: 'guest'
+            };
             console.log('SocketServer is listening on port ' + port + '!');
         });
     };

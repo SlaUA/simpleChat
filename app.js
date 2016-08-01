@@ -2,12 +2,24 @@ var WebServer    = require('./modules/WebServer.js');
 var SocketServer = require('./modules/SocketServer.js');
 
 var webServerConfig = {
-    port            : 8080,
-    sharedFolder    : './client/public',
-    viewEngine      : 'ejs',
-    usernameCheckURL: '/checkUsername',
+    port        : 8080,
+    sharedFolder: './client/public',
+    viewEngine  : 'ejs',
 
-    usernameCheck: function usernameCheck(req, res) {
+    POST_REQUESTS_MAP: {
+        '/checkUsername': 'checkUsername'
+    },
+
+    GET_REQUESTS_MAP: {
+        '*': 'onEachGetRequest'
+    },
+
+    onEachGetRequest:  function (req, res) {
+
+        res.render('index');
+    },
+
+    checkUsername: function (req, res) {
 
         var isValid = webServerConfig.checkUsernameIsExists(req.body.username);
 
@@ -35,8 +47,8 @@ var webServerConfig = {
     }
 };
 
-var httpServer = new WebServer(webServerConfig);
 var wsServer   = new SocketServer(3000);
+var httpServer = new WebServer(webServerConfig);
 
 httpServer.init();
 wsServer.init();

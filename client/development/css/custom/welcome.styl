@@ -1,7 +1,7 @@
 @import 'animations.styl'
 
 $WELCOME_ROW_SIDE_PADDING = 30px;
-$WELCOME_ROW_TOP_PADDING = 20px;
+$WELCOME_ROW_TOP_BOTTOM_PADDING = 20px;
 
 body
   min-width: 320px
@@ -10,7 +10,7 @@ body
   [ng-view]{
     display: flex;
     justify-content: center;
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .welcome-wrapper
@@ -42,7 +42,7 @@ body
 
     .welcome-circle
       position: absolute;
-      top: $WELCOME_ROW_TOP_PADDING;
+      top: $WELCOME_ROW_TOP_BOTTOM_PADDING;
       right: 20px;
       background: url("/images/ubuntuCircle.png");
       width: 30px;
@@ -59,16 +59,19 @@ body
       animation-timing-function: linear;
 
     .welcome-username-error
-      margin: 5px $WELCOME_ROW_SIDE_PADDING;
-      color: red;
+      margin: 5px $WELCOME_ROW_SIDE_PADDING 0;
+      color: orangered;
       font-size: 17px;
       text-transform: uppercase;
+
+    form[name="userForm"]
+      margin-bottom: $WELCOME_ROW_TOP_BOTTOM_PADDING
 
     form[name="userForm"] > [class*="-row"]
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
-      margin: 10px 0 20px 30px;
+      margin: 10px 0 0 30px;
 
       [class*="-status"]
         flex-direction: column;
