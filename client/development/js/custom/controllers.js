@@ -74,7 +74,10 @@ angular.module('controllers', ['services'])
 
                    onConnect: function () {
 
-                       this.triggerEvent('sendMessageToServer', this.clientActions.CONNECTED_SUCCESSFULLY);
+                       setTimeout(this.triggerEvent.bind(
+                           this, 'sendMessageToServer',
+                           this.clientActions.CONNECTED_SUCCESSFULLY),0
+                       );
                    },
 
                    onNewChatMessage: function (messageData) {
