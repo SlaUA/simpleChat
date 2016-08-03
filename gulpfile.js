@@ -14,7 +14,6 @@ gulp.task('javascript', function () {
                    'client/development/js/custom/services.js',
                    'client/development/js/custom/directives.js',
                    'client/development/js/custom/app.js',
-                   'client/development/js/custom/clientChatManager.js',
                    'client/development/js/custom/**.*'
                ])
                .pipe(plumber())
