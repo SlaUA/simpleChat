@@ -42,7 +42,7 @@ angular.module('controllers', ['services'])
                    _stackedMessages: [],
 
                    connection: null,
-                   address   : 'ws://localhost:3000',
+                   address   : 'ws://' + location.hostname + ':3000',
 
                    eventsMap: {
                        connect             : ['onConnect'],
@@ -76,7 +76,7 @@ angular.module('controllers', ['services'])
 
                        setTimeout(this.triggerEvent.bind(
                            this, 'sendMessageToServer',
-                           this.clientActions.CONNECTED_SUCCESSFULLY),0
+                           this.clientActions.CONNECTED_SUCCESSFULLY), 0
                        );
                    },
 
