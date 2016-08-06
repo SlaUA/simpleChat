@@ -1,9 +1,12 @@
-function SocketServer(port) {
+function SocketServer(options) {
 
-    var server = require('http').createServer();
-    var io     = require('socket.io');
-    var Chat   = require('./Chat');
-    var _this  = null;
+    var Chat  = require('./Chat');
+    var _this = null;
+
+    var express = require('express')();
+    var server  = express.listen(options.port);
+    var io      = require('socket.io');
+
     /**
      * @type {null|Chat}
      * single chat instance
@@ -12,17 +15,17 @@ function SocketServer(port) {
 
     this.init = function () {
 
-        _this      = io(server);
+        _this      = io.listen(server);
         _this.chat = Chat(_this);
         _this.chat.init();
 
-        server.listen(port, function () {
+        server.listen(options.port, function () {
 
             global.socketConnectedClients            = _this.sockets.connected;
             global.socketConnectedClients['/#guest'] = {
                 username: 'guest'
             };
-            console.log('SocketServer is listening on port ' + port + '!');
+            console.log('SocketServer is listening on port ' + options.port + '!');
         });
     };
 
