@@ -2,7 +2,7 @@ var WebServer    = require('./modules/WebServer.js');
 var SocketServer = require('./modules/SocketServer.js');
 
 var webServerConfig = {
-    port        : 8080,
+    port        : process.env.PORT || 8080,
     sharedFolder: './client/public',
     viewEngine  : 'ejs',
 
@@ -47,7 +47,13 @@ var webServerConfig = {
     }
 };
 
-var wsServer   = new SocketServer(3000);
+
+var socketServerConfig = {
+    port: 3000
+};
+
+
+var wsServer   = new SocketServer(socketServerConfig);
 var httpServer = new WebServer(webServerConfig);
 
 httpServer.init();
