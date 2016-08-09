@@ -37,6 +37,8 @@ angular.module('controllers', ['services'])
            'UserModule',
            function ($scope, UserModule) {
 
+               $scope.currentUsername = UserModule.username;
+
                var chatManager = {
 
                    _stackedMessages: [],

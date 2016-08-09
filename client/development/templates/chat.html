@@ -12,12 +12,15 @@
             <div class="chat-users-online-layout">
                 <div class="chat-users-online-header">Online now:</div>
                 <div class="chat-users-online-list">
-                    <online-chat-user ng-repeat="user in onlineUsers"></online-chat-user>
+                    <online-chat-user ng-class="{'current-user': user === currentUsername}"
+                                      ng-repeat="user in onlineUsers"></online-chat-user>
                 </div>
             </div>
             <div class="chat-messages-layout">
                 <div class="chat-messages-wrapper">
-                    <chat-message ng-repeat="message in chatMessages"></chat-message>
+                    <chat-message ng-repeat="message in chatMessages"
+                                  ng-class="{'current-user-message': message.usernameFrom === currentUsername}">
+                    </chat-message>
                 </div>
                 <div class="chat-type-wrapper">
                     <textarea
