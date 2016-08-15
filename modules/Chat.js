@@ -5,9 +5,19 @@ function Chat(server) {
     }
 
     this.eventsMap = {
-        sendChatMessage: ['emitNewChatMessage'],
-        connectSuccess : ['saveUserData', 'sendOnlineUsersList'],
-        disconnect     : ['sendOnlineUsersList']
+        sendChatMessage: [
+            'emitNewChatMessage'
+        ],
+        connectSuccess : [
+            'saveUserData',
+            'sendOnlineUsersList'
+        ],
+        disconnect     : [
+            'sendOnlineUsersList'
+        ],
+        forceDisconnect:[
+            'disconnectClient'
+        ]
     };
 
     this.serverCommandsMap = {
@@ -72,6 +82,11 @@ function Chat(server) {
             }
             this[callbackName].call(this, data);
         }.bind(this));
+    };
+
+    this.disconnectClient = function (data) {
+
+        this.server.sockets.connected['/#' + data.idFrom].disconnect();
     };
 }
 

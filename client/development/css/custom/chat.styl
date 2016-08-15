@@ -24,6 +24,10 @@ div[ng-view]
         height: 20px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
 
         .chat-window-name
           position: absolute;
@@ -69,8 +73,12 @@ div[ng-view]
           min-width: 200px;
           display: flex;
           flex-direction: column;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
 
-          .chat-users-online-header
+  .chat-users-online-header
             padding: 10px;
             font-size: 18px;
 

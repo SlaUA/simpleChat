@@ -1,7 +1,10 @@
 angular.module('controllers', ['services'])
 
        .controller('welcomeController', [
-           '$scope', 'UserModule', '$location', function ($scope, UserModule, $location) {
+           '$scope',
+           'UserModule',
+           '$location',
+           function ($scope, UserModule, $location) {
 
                $scope.username             = 'guest';
                $scope.usernameCheckPending = false;
@@ -35,9 +38,19 @@ angular.module('controllers', ['services'])
        .controller('chatController', [
            '$scope',
            'UserModule',
-           function ($scope, UserModule) {
+           '$location',
+           function ($scope, UserModule, $location) {
 
                $scope.currentUsername = UserModule.username;
+
+               $scope.closeChat = function () {
+
+                   try {
+                       chatManager.publishAction(chatManager.clientActions.TRY_DISCONNECT);
+                   } catch (e) {}
+                   UserModule.username = '';
+                   $location.path("/");
+               };
 
                var chatManager = {
 
@@ -56,7 +69,8 @@ angular.module('controllers', ['services'])
 
                    clientActions: {
                        SEND_CHAT_MESSAGE     : 'sendChatMessage',
-                       CONNECTED_SUCCESSFULLY: 'connectSuccess'
+                       CONNECTED_SUCCESSFULLY: 'connectSuccess',
+                       TRY_DISCONNECT        : 'forceDisconnect'
                    },
 
                    clientToServerActionsMap: {},
@@ -186,6 +200,56 @@ angular.module('controllers', ['services'])
                    }
                };
 
+               var dragDropManager = {
+
+                   chatWrapper: document.querySelector('.chat-wrapper'),
+                   chatWindow : document.querySelector('.chat-window'),
+
+                   // deltas of client event and chat offset
+                   deltaX: 0,
+                   deltaY: 0,
+
+                   // bound to "this" function to run on mouse move
+                   onMoveBoundFn: function () {
+                   },
+
+                   init: function () {
+
+                       this.onMoveBoundFn = this.onMouseMove.bind(this);
+
+                       this.chatWrapper
+                           .addEventListener('mousedown', function (e) {
+
+                               if (!e.target.classList.contains('chat-header-wrapper')) {
+                                   return;
+                               }
+
+                               this.chatWindow.style.position = 'absolute';
+
+                               this.deltaX = e.clientX - this.chatWindow.offsetLeft;
+                               this.deltaY = e.clientY - this.chatWindow.offsetTop;
+
+                               this.chatWrapper.addEventListener(
+                                   'mousemove',
+                                   this.onMoveBoundFn
+                               );
+                           }.bind(this));
+
+                       this.chatWrapper
+                           .addEventListener('mouseup', function () {
+
+                               this.chatWrapper.removeEventListener('mousemove', this.onMoveBoundFn);
+                           }.bind(this));
+                   },
+
+                   onMouseMove: function (e) {
+
+                       this.chatWindow.style.left = (e.clientX - this.deltaX) + 'px';
+                       this.chatWindow.style.top  = (e.clientY - this.deltaY) + 'px';
+                   }
+               };
+
                chatManager.init();
+               dragDropManager.init();
            }
        ]);
