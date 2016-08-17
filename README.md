@@ -1,8 +1,9 @@
 # simpleChat
-Test chat on websockets.
+Simple chat on websockets.
 
 Used:
  - Nodejs
  - Gulp (autoprefixer, concat, etc.)
- - jQuery
+ - Angular JS
+ - socket io
  - mediator pattern
