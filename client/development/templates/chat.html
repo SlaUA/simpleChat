@@ -1,10 +1,9 @@
 <div class="chat-wrapper">
-    <div class="chat-window">
+    <div class="chat-window" ng-class="{'hiddenChat':!chatVisible}">
         <div class="chat-header-wrapper">
             <div class="chat-window-name">Chat</div>
             <div class="chat-control-buttons-wrapper">
-                <div class="chat-control-button chat-collapse"></div>
-                <div class="chat-control-button chat-expand"></div>
+                <div ng-click="chatVisible = !chatVisible" class="chat-control-button chat-collapse"></div>
                 <div ng-click="closeChat()" class="chat-control-button chat-close"></div>
             </div>
         </div>
@@ -32,5 +31,11 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="bottom-panel">
+    <div class="bottom-panel-item active" ng-click="chatVisible = !chatVisible" ng-class="{'active':chatVisible}">
+        <div class="panel-item-image"></div>
+        <div class="panel-item-name">Chat</div>
     </div>
 </div>

@@ -7,11 +7,11 @@ body
   min-width: 320px
   background: url(/images/mainBackground.jpg) no-repeat center center black;
 
-  [ng-view]{
+  [ng-view]
     display: flex;
     justify-content: center;
     flex-direction: column;
-  }
+    height:100%
 
   .welcome-wrapper
     position: relative;
@@ -99,9 +99,8 @@ body
       flex-grow: 1;
       width: 70%;
 
-      &:focus {
+      &:focus
         outline: none;
-      }
 
     .welcome-submit-username
       display: none;

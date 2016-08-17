@@ -42,6 +42,7 @@ angular.module('controllers', ['services'])
            function ($scope, UserModule, $location) {
 
                $scope.currentUsername = UserModule.username;
+               $scope.chatVisible = true;
 
                $scope.closeChat = function () {
 
@@ -49,7 +50,7 @@ angular.module('controllers', ['services'])
                        chatManager.publishAction(chatManager.clientActions.TRY_DISCONNECT);
                    } catch (e) {}
                    UserModule.username = '';
-                   $location.path("/");
+                   $location.path('/');
                };
 
                var chatManager = {
