@@ -1,6 +1,5 @@
 var gulp         = require('gulp');
 var concat       = require('gulp-concat');
-var sourcemaps   = require('gulp-sourcemaps');
 var stylus       = require('gulp-stylus');
 var autoprefixer = require('gulp-autoprefixer');
 var plumber      = require('gulp-plumber');
@@ -17,9 +16,7 @@ gulp.task('javascript', function () {
                    'client/development/js/custom/**.*'
                ])
                .pipe(plumber())
-               .pipe(sourcemaps.init())
                .pipe(concat('main.js'))
-               .pipe(sourcemaps.write())
                .pipe(plumber.stop())
                .pipe(gulp.dest('client/public/js/'));
 });
